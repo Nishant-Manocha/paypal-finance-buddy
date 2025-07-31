@@ -17,71 +17,42 @@ const FinanceCalculator = () => {
   return (
     <div className="min-h-screen py-8 px-4 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="text-center mb-8 animate-fade-in">
-        <h1 className="text-4xl font-bold text-primary mb-4">
+      <div className="text-center mb-12 animate-fade-in">
+        <h1 className="text-5xl font-bold text-primary mb-4">
           PayPal Finance Buddy
         </h1>
-        <p className="text-xl text-muted-foreground mb-6">
+        <p className="text-xl text-muted-foreground mb-8">
           Your trusted companion for financial calculations
         </p>
         
         {/* Toggle Buttons */}
-        <Card className="card-neumorphic p-2 inline-flex gap-2 mb-8">
+        <div className="inline-flex p-1 bg-card rounded-xl border border-border shadow-lg">
           <Button
             onClick={() => toggleCalculator('simple-interest')}
-            variant={activeCalculator === 'simple-interest' ? 'default' : 'ghost'}
-            className={`
-              px-6 py-3 font-medium transition-all duration-300 ease-in-out
-              ${activeCalculator === 'simple-interest' 
-                ? 'bg-primary text-primary-foreground shadow-lg transform scale-105' 
-                : 'text-muted-foreground hover:text-primary'
-              }
-            `}
+            className={`tab-button ${
+              activeCalculator === 'simple-interest' ? 'tab-active' : 'tab-inactive'
+            }`}
           >
-            <Percent className="h-5 w-5 mr-2" />
+            <Percent className="h-5 w-5" />
             Simple Interest
           </Button>
           
           <Button
             onClick={() => toggleCalculator('loan-emi')}
-            variant={activeCalculator === 'loan-emi' ? 'default' : 'ghost'}
-            className={`
-              px-6 py-3 font-medium transition-all duration-300 ease-in-out
-              ${activeCalculator === 'loan-emi' 
-                ? 'bg-primary text-primary-foreground shadow-lg transform scale-105' 
-                : 'text-muted-foreground hover:text-primary'
-              }
-            `}
+            className={`tab-button ${
+              activeCalculator === 'loan-emi' ? 'tab-active' : 'tab-inactive'
+            }`}
           >
-            <Calculator className="h-5 w-5 mr-2" />
+            <Calculator className="h-5 w-5" />
             Loan EMI
           </Button>
-        </Card>
+        </div>
       </div>
 
       {/* Calculator Content */}
-      <div className="relative overflow-hidden">
-        <div 
-          className={`transition-transform duration-500 ease-in-out ${
-            activeCalculator === 'simple-interest' ? 'translate-x-0' : '-translate-x-full'
-          }`}
-          style={{
-            display: activeCalculator === 'simple-interest' ? 'block' : 'none'
-          }}
-        >
-          <SimpleInterestCalculator />
-        </div>
-        
-        <div 
-          className={`transition-transform duration-500 ease-in-out ${
-            activeCalculator === 'loan-emi' ? 'translate-x-0' : 'translate-x-full'
-          }`}
-          style={{
-            display: activeCalculator === 'loan-emi' ? 'block' : 'none'
-          }}
-        >
-          <LoanEmiCalculator />
-        </div>
+      <div className="animate-scale-in">
+        {activeCalculator === 'simple-interest' && <SimpleInterestCalculator />}
+        {activeCalculator === 'loan-emi' && <LoanEmiCalculator />}
       </div>
 
       {/* Footer */}

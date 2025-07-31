@@ -148,24 +148,22 @@ const SimpleInterestCalculator = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="card-neumorphic p-6 animate-fade-in">
-        <div className="space-y-6">
+    <div className="space-y-8">
+      <div className="calculator-card animate-fade-in">
+        <div className="space-y-8">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-primary mb-2">Simple Interest Calculator</h2>
-            <p className="text-muted-foreground">Calculate simple interest and total amount</p>
+            <h2 className="text-3xl font-bold text-primary mb-3">Simple Interest Calculator</h2>
+            <p className="text-lg text-muted-foreground">Calculate simple interest and total amount</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="principal" className="text-sm font-medium">
-                  Principal Amount (₹)
-                </Label>
+          <div className="input-group">
+            <div className="input-container">
+              <div className="input-label">
+                <Label htmlFor="principal">Principal Amount (₹)</Label>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      <Info className="h-4 w-4 text-muted-foreground" />
+                      <Info className="info-icon" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>The initial amount of money</p>
@@ -179,22 +177,20 @@ const SimpleInterestCalculator = () => {
                 value={formData.principal}
                 onChange={(e) => handleInputChange('principal', e.target.value)}
                 placeholder="e.g., 100000"
-                className={`input-neumorphic ${errors.principal ? 'border-destructive' : ''}`}
+                className={`input-field ${errors.principal ? 'border-destructive ring-destructive/20' : ''}`}
               />
               {errors.principal && (
                 <p className="text-sm text-destructive animate-fade-in">{errors.principal}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="rate" className="text-sm font-medium">
-                  Interest Rate (% per year)
-                </Label>
+            <div className="input-container">
+              <div className="input-label">
+                <Label htmlFor="rate">Interest Rate (% per year)</Label>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      <Info className="h-4 w-4 text-muted-foreground" />
+                      <Info className="info-icon" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Annual interest rate percentage</p>
@@ -208,22 +204,20 @@ const SimpleInterestCalculator = () => {
                 value={formData.rate}
                 onChange={(e) => handleInputChange('rate', e.target.value)}
                 placeholder="e.g., 8.5"
-                className={`input-neumorphic ${errors.rate ? 'border-destructive' : ''}`}
+                className={`input-field ${errors.rate ? 'border-destructive ring-destructive/20' : ''}`}
               />
               {errors.rate && (
                 <p className="text-sm text-destructive animate-fade-in">{errors.rate}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="time" className="text-sm font-medium">
-                  Time Period (years)
-                </Label>
+            <div className="input-container">
+              <div className="input-label">
+                <Label htmlFor="time">Time Period (years)</Label>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      <Info className="h-4 w-4 text-muted-foreground" />
+                      <Info className="info-icon" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Duration of investment in years</p>
@@ -237,7 +231,7 @@ const SimpleInterestCalculator = () => {
                 value={formData.time}
                 onChange={(e) => handleInputChange('time', e.target.value)}
                 placeholder="e.g., 5"
-                className={`input-neumorphic ${errors.time ? 'border-destructive' : ''}`}
+                className={`input-field ${errors.time ? 'border-destructive ring-destructive/20' : ''}`}
               />
               {errors.time && (
                 <p className="text-sm text-destructive animate-fade-in">{errors.time}</p>
@@ -245,49 +239,55 @@ const SimpleInterestCalculator = () => {
             </div>
           </div>
 
-          <div className="flex gap-4 justify-center">
+          <div className="button-container">
             <Button
               onClick={calculateSimpleInterest}
               disabled={!isFormValid()}
-              className="btn-neumorphic px-8 py-2 bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+              className="btn-primary"
             >
-              Calculate
+              Calculate Interest
             </Button>
             <Button
               onClick={resetForm}
-              variant="outline"
-              className="btn-neumorphic px-8 py-2"
+              className="btn-secondary"
             >
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <RotateCcw className="h-5 w-5 mr-2" />
               Reset
             </Button>
           </div>
         </div>
-      </Card>
+      </div>
 
       {showResults && results.valid && (
-        <Card className="card-neumorphic p-6 animate-bounce-in">
-          <h3 className="text-xl font-bold text-center mb-6 text-primary">Calculation Results</h3>
+        <div className="calculator-card animate-bounce-in">
+          <h3 className="text-2xl font-bold text-center mb-8 text-primary">Calculation Results</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="text-center p-4 rounded-lg bg-accent/20">
-              <p className="text-sm text-muted-foreground mb-1">Simple Interest</p>
+          <div className="results-grid">
+            <div className="result-card">
+              <p className="text-sm text-muted-foreground mb-2">Simple Interest</p>
               <p className="text-2xl font-bold text-primary">
                 {formatCurrency(results.simpleInterest)}
               </p>
             </div>
             
-            <div className="text-center p-4 rounded-lg bg-success/10">
-              <p className="text-sm text-muted-foreground mb-1">Principal Amount</p>
+            <div className="result-card">
+              <p className="text-sm text-muted-foreground mb-2">Principal Amount</p>
               <p className="text-2xl font-bold text-success">
                 {formatCurrency(parseFloat(formData.principal))}
               </p>
             </div>
             
-            <div className="text-center p-4 rounded-lg bg-primary/10">
-              <p className="text-sm text-muted-foreground mb-1">Total Amount</p>
+            <div className="result-card">
+              <p className="text-sm text-muted-foreground mb-2">Total Amount</p>
               <p className="text-2xl font-bold text-primary">
                 {formatCurrency(results.totalAmount)}
+              </p>
+            </div>
+
+            <div className="result-card">
+              <p className="text-sm text-muted-foreground mb-2">Growth</p>
+              <p className="text-xl font-bold text-warning">
+                {((results.totalAmount - parseFloat(formData.principal)) / parseFloat(formData.principal) * 100).toFixed(1)}%
               </p>
             </div>
           </div>
@@ -300,7 +300,7 @@ const SimpleInterestCalculator = () => {
             yAxisKey="amount"
             className="animate-slide-up"
           />
-        </Card>
+        </div>
       )}
     </div>
   );

@@ -167,24 +167,22 @@ const LoanEmiCalculator = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="card-neumorphic p-6 animate-fade-in">
-        <div className="space-y-6">
+    <div className="space-y-8">
+      <div className="calculator-card animate-fade-in">
+        <div className="space-y-8">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-primary mb-2">Loan EMI Calculator</h2>
-            <p className="text-muted-foreground">Calculate your monthly EMI and total interest</p>
+            <h2 className="text-3xl font-bold text-primary mb-3">Loan EMI Calculator</h2>
+            <p className="text-lg text-muted-foreground">Calculate your monthly EMI and total interest</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="loanAmount" className="text-sm font-medium">
-                  Loan Amount (₹)
-                </Label>
+          <div className="input-group">
+            <div className="input-container">
+              <div className="input-label">
+                <Label htmlFor="loanAmount">Loan Amount (₹)</Label>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      <Info className="h-4 w-4 text-muted-foreground" />
+                      <Info className="info-icon" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Total amount you want to borrow</p>
@@ -198,22 +196,20 @@ const LoanEmiCalculator = () => {
                 value={formData.loanAmount}
                 onChange={(e) => handleInputChange('loanAmount', e.target.value)}
                 placeholder="e.g., 1000000"
-                className={`input-neumorphic ${errors.loanAmount ? 'border-destructive' : ''}`}
+                className={`input-field ${errors.loanAmount ? 'border-destructive ring-destructive/20' : ''}`}
               />
               {errors.loanAmount && (
                 <p className="text-sm text-destructive animate-fade-in">{errors.loanAmount}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="interestRate" className="text-sm font-medium">
-                  Interest Rate (% per year)
-                </Label>
+            <div className="input-container">
+              <div className="input-label">
+                <Label htmlFor="interestRate">Interest Rate (% per year)</Label>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      <Info className="h-4 w-4 text-muted-foreground" />
+                      <Info className="info-icon" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Annual interest rate charged by the lender</p>
@@ -227,22 +223,20 @@ const LoanEmiCalculator = () => {
                 value={formData.interestRate}
                 onChange={(e) => handleInputChange('interestRate', e.target.value)}
                 placeholder="e.g., 8.5"
-                className={`input-neumorphic ${errors.interestRate ? 'border-destructive' : ''}`}
+                className={`input-field ${errors.interestRate ? 'border-destructive ring-destructive/20' : ''}`}
               />
               {errors.interestRate && (
                 <p className="text-sm text-destructive animate-fade-in">{errors.interestRate}</p>
               )}
             </div>
 
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="tenure" className="text-sm font-medium">
-                  Tenure (months)
-                </Label>
+            <div className="input-container">
+              <div className="input-label">
+                <Label htmlFor="tenure">Tenure (months)</Label>
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger>
-                      <Info className="h-4 w-4 text-muted-foreground" />
+                      <Info className="info-icon" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>Loan repayment period in months</p>
@@ -256,7 +250,7 @@ const LoanEmiCalculator = () => {
                 value={formData.tenure}
                 onChange={(e) => handleInputChange('tenure', e.target.value)}
                 placeholder="e.g., 240"
-                className={`input-neumorphic ${errors.tenure ? 'border-destructive' : ''}`}
+                className={`input-field ${errors.tenure ? 'border-destructive ring-destructive/20' : ''}`}
               />
               {errors.tenure && (
                 <p className="text-sm text-destructive animate-fade-in">{errors.tenure}</p>
@@ -264,55 +258,54 @@ const LoanEmiCalculator = () => {
             </div>
           </div>
 
-          <div className="flex gap-4 justify-center">
+          <div className="button-container">
             <Button
               onClick={calculateEMI}
               disabled={!isFormValid()}
-              className="btn-neumorphic px-8 py-2 bg-primary text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+              className="btn-primary"
             >
               Calculate EMI
             </Button>
             <Button
               onClick={resetForm}
-              variant="outline"
-              className="btn-neumorphic px-8 py-2"
+              className="btn-secondary"
             >
-              <RotateCcw className="h-4 w-4 mr-2" />
+              <RotateCcw className="h-5 w-5 mr-2" />
               Reset
             </Button>
           </div>
         </div>
-      </Card>
+      </div>
 
       {showResults && results.valid && (
-        <Card className="card-neumorphic p-6 animate-bounce-in">
-          <h3 className="text-xl font-bold text-center mb-6 text-primary">EMI Calculation Results</h3>
+        <div className="calculator-card animate-bounce-in">
+          <h3 className="text-2xl font-bold text-center mb-8 text-primary">EMI Calculation Results</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div className="text-center p-4 rounded-lg bg-primary/10">
-              <p className="text-sm text-muted-foreground mb-1">Monthly EMI</p>
+          <div className="results-grid">
+            <div className="result-card">
+              <p className="text-sm text-muted-foreground mb-2">Monthly EMI</p>
               <p className="text-2xl font-bold text-primary">
                 {formatCurrency(results.emi)}
               </p>
             </div>
             
-            <div className="text-center p-4 rounded-lg bg-success/10">
-              <p className="text-sm text-muted-foreground mb-1">Principal Amount</p>
+            <div className="result-card">
+              <p className="text-sm text-muted-foreground mb-2">Principal Amount</p>
               <p className="text-2xl font-bold text-success">
                 {formatCurrency(parseFloat(formData.loanAmount))}
               </p>
             </div>
             
-            <div className="text-center p-4 rounded-lg bg-warning/10">
-              <p className="text-sm text-muted-foreground mb-1">Total Interest</p>
+            <div className="result-card">
+              <p className="text-sm text-muted-foreground mb-2">Total Interest</p>
               <p className="text-2xl font-bold text-warning">
                 {formatCurrency(results.totalInterest)}
               </p>
             </div>
             
-            <div className="text-center p-4 rounded-lg bg-accent/20">
-              <p className="text-sm text-muted-foreground mb-1">Total Payment</p>
-              <p className="text-2xl font-bold text-primary">
+            <div className="result-card">
+              <p className="text-sm text-muted-foreground mb-2">Total Payment</p>
+              <p className="text-2xl font-bold text-accent-foreground">
                 {formatCurrency(results.totalPayment)}
               </p>
             </div>
@@ -324,7 +317,7 @@ const LoanEmiCalculator = () => {
             title="Principal vs Interest Breakdown"
             className="animate-slide-up"
           />
-        </Card>
+        </div>
       )}
     </div>
   );

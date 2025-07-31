@@ -134,61 +134,113 @@
 }
 
 @layer components {
-  /* Neumorphic Button */
-  .btn-neumorphic {
-    @apply relative overflow-hidden transition-all duration-300 ease-in-out;
-    background: var(--gradient-card);
-    box-shadow: var(--shadow-neumorphic);
-    border-radius: var(--radius);
-  }
-  
-  .btn-neumorphic:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
+  /* Consistent Input Styles */
+  .input-field {
+    @apply h-12 rounded-lg border border-border bg-card px-4 text-base font-medium;
+    @apply transition-all duration-200 ease-in-out;
+    @apply focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none;
+    @apply placeholder:text-muted-foreground;
+    box-shadow: inset 2px 2px 4px hsl(210 20% 85%), inset -2px -2px 4px hsl(0 0% 100%);
   }
 
-  .btn-neumorphic:active {
-    transform: translateY(0);
-    box-shadow: var(--shadow-neumorphic-inset);
+  .input-field:focus {
+    box-shadow: inset 2px 2px 4px hsl(210 20% 85%), inset -2px -2px 4px hsl(0 0% 100%), 
+                0 0 0 2px hsl(var(--primary) / 0.2);
+  }
+
+  /* Button Styles */
+  .btn-primary {
+    @apply h-12 px-8 bg-primary text-primary-foreground font-semibold rounded-lg;
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:bg-primary-hover hover:scale-105 hover:shadow-lg;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/20;
+    box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+  }
+
+  .btn-secondary {
+    @apply h-12 px-8 bg-secondary text-secondary-foreground font-semibold rounded-lg border border-border;
+    @apply transition-all duration-200 ease-in-out;
+    @apply hover:bg-muted hover:scale-105;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/20;
+    box-shadow: 2px 2px 6px hsl(210 20% 85%), -2px -2px 6px hsl(0 0% 100%);
+  }
+
+  /* Tab Styles */
+  .tab-button {
+    @apply px-6 py-3 font-semibold rounded-lg transition-all duration-300 ease-in-out;
+    @apply flex items-center gap-2;
+  }
+
+  .tab-active {
+    @apply bg-primary text-primary-foreground;
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.4);
+    transform: translateY(-1px);
+  }
+
+  .tab-inactive {
+    @apply text-muted-foreground hover:text-primary hover:bg-accent/50;
   }
 
   /* Card Styles */
-  .card-neumorphic {
-    background: var(--gradient-card);
-    box-shadow: var(--shadow-card);
-    border-radius: calc(var(--radius) * 1.5);
-    transition: var(--transition-smooth);
+  .calculator-card {
+    @apply bg-card rounded-2xl border border-border p-8;
+    background: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+    box-shadow: 0 8px 32px hsl(210 100% 37% / 0.08), 
+                8px 8px 24px hsl(210 20% 85%), 
+                -8px -8px 24px hsl(0 0% 100%);
   }
 
-  .card-neumorphic:hover {
-    box-shadow: var(--shadow-hover);
-    transform: translateY(-4px);
+  /* Input Group Layouts */
+  .input-group {
+    @apply grid grid-cols-1 md:grid-cols-3 gap-6;
   }
 
-  /* Input Styles */
-  .input-neumorphic {
-    background: var(--gradient-card);
-    box-shadow: var(--shadow-neumorphic-inset);
-    border: 1px solid hsl(var(--border));
-    transition: var(--transition-smooth);
+  .input-container {
+    @apply space-y-2 flex-1;
   }
 
-  .input-neumorphic:focus {
-    box-shadow: var(--shadow-neumorphic-inset), 0 0 0 2px hsl(var(--ring) / 0.2);
-    border-color: hsl(var(--ring));
+  .input-label {
+    @apply flex items-center gap-2 text-sm font-semibold text-foreground;
+  }
+
+  .info-icon {
+    @apply h-4 w-4 text-muted-foreground transition-colors hover:text-primary cursor-help;
+    vertical-align: middle;
+  }
+
+  /* Button Container */
+  .button-container {
+    @apply flex flex-col sm:flex-row gap-4 justify-center items-center mt-8;
+  }
+
+  /* Results Grid */
+  .results-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8;
+  }
+
+  .result-card {
+    @apply text-center p-6 rounded-xl border border-border;
+    @apply transition-all duration-200 hover:scale-105;
+    background: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+    box-shadow: 4px 4px 12px hsl(210 20% 85%), -4px -4px 12px hsl(0 0% 100%);
   }
 
   /* Animations */
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.6s ease-out;
   }
 
   .animate-slide-up {
-    animation: slideUp 0.4s ease-out;
+    animation: slideUp 0.5s ease-out;
   }
 
   .animate-bounce-in {
-    animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation: bounceIn 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out;
   }
 }
 
@@ -224,6 +276,17 @@
     transform: scale(1.05);
   }
   70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
     transform: scale(0.9);
   }
   100% {
