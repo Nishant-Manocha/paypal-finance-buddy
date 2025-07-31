@@ -2,41 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* PayPal Finance Calculator Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* PayPal Blue Theme */
+    --background: 0 0% 99%;
+    --foreground: 220 15% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 15% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 15% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* PayPal Primary Blue */
+    --primary: 210 100% 37%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 210 100% 42%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Neumorphic Surfaces */
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 220 15% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 20% 95%;
+    --muted-foreground: 220 10% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 100% 92%;
+    --accent-foreground: 210 100% 37%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 210 20% 90%;
+    --input: 210 20% 98%;
+    --ring: 210 100% 37%;
 
-    --radius: 0.5rem;
+    /* Enhanced Design System */
+    --success: 140 50% 45%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 37%) 0%, hsl(210 100% 45%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(210 20% 96%) 0%, hsl(210 20% 92%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 20% 98%) 100%);
+
+    /* Shadows */
+    --shadow-neumorphic: 
+      8px 8px 16px hsl(210 20% 85%), 
+      -8px -8px 16px hsl(0 0% 100%);
+    --shadow-neumorphic-inset: 
+      inset 4px 4px 8px hsl(210 20% 85%), 
+      inset -4px -4px 8px hsl(0 0% 100%);
+    --shadow-card: 0 4px 20px hsl(210 100% 37% / 0.1);
+    --shadow-hover: 0 8px 30px hsl(210 100% 37% / 0.15);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +128,106 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    background: var(--gradient-secondary);
+  }
+}
+
+@layer components {
+  /* Neumorphic Button */
+  .btn-neumorphic {
+    @apply relative overflow-hidden transition-all duration-300 ease-in-out;
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-neumorphic);
+    border-radius: var(--radius);
+  }
+  
+  .btn-neumorphic:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .btn-neumorphic:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-neumorphic-inset);
+  }
+
+  /* Card Styles */
+  .card-neumorphic {
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-card);
+    border-radius: calc(var(--radius) * 1.5);
+    transition: var(--transition-smooth);
+  }
+
+  .card-neumorphic:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-4px);
+  }
+
+  /* Input Styles */
+  .input-neumorphic {
+    background: var(--gradient-card);
+    box-shadow: var(--shadow-neumorphic-inset);
+    border: 1px solid hsl(var(--border));
+    transition: var(--transition-smooth);
+  }
+
+  .input-neumorphic:focus {
+    box-shadow: var(--shadow-neumorphic-inset), 0 0 0 2px hsl(var(--ring) / 0.2);
+    border-color: hsl(var(--ring));
+  }
+
+  /* Animations */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  .animate-bounce-in {
+    animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
