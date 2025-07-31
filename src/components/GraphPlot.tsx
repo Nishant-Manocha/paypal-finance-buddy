@@ -1,188 +1,91 @@
 import React from 'react';
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend
-} from 'recharts';
-import { cn } from '@/lib/utils';
+import { View, Text, Dimensions } from 'react-native';
+import { Card } from 'react-native-paper';
 
 interface GraphPlotProps {
   data: any[];
-  type: 'line' | 'pie';
   title: string;
-  xAxisKey?: string;
-  yAxisKey?: string;
-  className?: string;
+  xKey: string;
+  yKeys: Array<{
+    key: string;
+    label: string;
+    color: string;
+  }>;
 }
 
-const GraphPlot: React.FC<GraphPlotProps> = ({
-  data,
-  type,
-  title,
-  xAxisKey = 'x',
-  yAxisKey = 'y',
-  className
-}) => {
-  const formatCurrency = (value: number) => {
-    if (value >= 10000000) {
-      return `₹${(value / 10000000).toFixed(1)}Cr`;
-    } else if (value >= 100000) {
-      return `₹${(value / 100000).toFixed(1)}L`;
-    } else if (value >= 1000) {
-      return `₹${(value / 1000).toFixed(1)}K`;
-    }
-    return `₹${value.toFixed(0)}`;
-  };
+const GraphPlot: React.FC<GraphPlotProps> = ({ data, title, xKey, yKeys }) => {
+  const screenWidth = Dimensions.get('window').width;
+  const graphWidth = screenWidth - 80;
+  const graphHeight = 200;
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-card p-4 rounded-lg shadow-lg border border-border">
-          <p className="font-medium text-foreground mb-2">{`Year ${label}`}</p>
-          {payload.map((pld: any, index: number) => (
-            <div key={index} className="flex justify-between items-center gap-4">
-              <span className="text-sm text-muted-foreground">{pld.name}:</span>
-              <span className="font-bold" style={{ color: pld.color }}>
-                {formatCurrency(pld.value)}
-              </span>
-            </div>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const PieTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0];
-      return (
-        <div className="bg-card p-4 rounded-lg shadow-lg border border-border">
-          <p className="font-medium text-foreground">{data.name}</p>
-          <p className="font-bold text-primary">{formatCurrency(data.value)}</p>
-          <p className="text-sm text-muted-foreground">
-            {((data.value / data.payload.totalValue) * 100).toFixed(1)}%
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  if (type === 'line') {
+  if (!data || data.length === 0) {
     return (
-      <div className={cn("space-y-4", className)}>
-        <h4 className="text-lg font-semibold text-center text-foreground">{title}</h4>
-        <div className="h-80 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis
-                dataKey={xAxisKey}
-                stroke="hsl(var(--muted-foreground))"
-                tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                label={{ value: 'Years', position: 'insideBottom', offset: -10 }}
-              />
-              <YAxis
-                stroke="hsl(var(--muted-foreground))"
-                tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                tickFormatter={formatCurrency}
-                label={{ value: 'Amount (₹)', angle: -90, position: 'insideLeft' }}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Line
-                type="monotone"
-                dataKey={yAxisKey}
-                stroke="hsl(var(--primary))"
-                strokeWidth={3}
-                dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
-                activeDot={{ r: 6, fill: 'hsl(var(--primary-hover))' }}
-                name="Total Amount"
-              />
-              {data.length > 0 && data[0].principal && (
-                <Line
-                  type="monotone"
-                  dataKey="principal"
-                  stroke="hsl(var(--success))"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={false}
-                  name="Principal"
-                />
-              )}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      <View className="p-4">
+        <Text className="text-center text-gray-500">No data to display</Text>
+      </View>
     );
   }
 
-  if (type === 'pie') {
-    // Calculate total for percentage
-    const totalValue = data.reduce((sum, entry) => sum + entry.value, 0);
-    const dataWithTotal = data.map(item => ({ ...item, totalValue }));
+  // Simple visualization - we'll show data points in a table format
+  // In a real implementation, you'd use a charting library like react-native-chart-kit
+  const maxValue = Math.max(...data.map(item => 
+    Math.max(...yKeys.map(yKey => item[yKey.key] || 0))
+  ));
 
-    return (
-      <div className={cn("space-y-4", className)}>
-        <h4 className="text-lg font-semibold text-center text-foreground">{title}</h4>
-        <div className="h-80 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={dataWithTotal}
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                innerRadius={40}
-                paddingAngle={5}
-                dataKey="value"
-                animationBegin={0}
-                animationDuration={800}
-              >
-                {dataWithTotal.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-              </Pie>
-              <Tooltip content={<PieTooltip />} />
-              <Legend
-                verticalAlign="bottom"
-                height={36}
-                iconType="circle"
-                formatter={(value, entry) => (
-                  <span style={{ color: entry.color }}>
-                    {value}: {formatCurrency(entry.payload?.value || 0)}
-                  </span>
-                )}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          {dataWithTotal.map((item, index) => (
-            <div key={index} className="text-center p-3 rounded-lg bg-muted/20">
-              <p className="text-sm text-muted-foreground">{item.name}</p>
-              <p className="font-bold text-lg" style={{ color: item.fill }}>
-                {formatCurrency(item.value)}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {((item.value / totalValue) * 100).toFixed(1)}%
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  return (
+    <View className="w-full">
+      <Text className="text-lg font-bold text-center mb-4">{title}</Text>
+      
+      {/* Legend */}
+      <View className="flex-row justify-center mb-4 flex-wrap">
+        {yKeys.map((yKey, index) => (
+          <View key={index} className="flex-row items-center mx-2 mb-2">
+            <View 
+              className="w-4 h-4 rounded mr-2"
+              style={{ backgroundColor: yKey.color }}
+            />
+            <Text className="text-sm">{yKey.label}</Text>
+          </View>
+        ))}
+      </View>
 
-  return null;
+      {/* Simple table representation */}
+      <Card className="p-4">
+        <View className="border-b border-gray-200 pb-2 mb-2">
+          <View className="flex-row">
+            <Text className="flex-1 font-bold text-center">{xKey}</Text>
+            {yKeys.map((yKey, index) => (
+              <Text key={index} className="flex-1 font-bold text-center text-xs">
+                {yKey.label}
+              </Text>
+            ))}
+          </View>
+        </View>
+        
+        {data.slice(0, 6).map((item, index) => (
+          <View key={index} className="flex-row py-1 border-b border-gray-100">
+            <Text className="flex-1 text-center">{item[xKey]}</Text>
+            {yKeys.map((yKey, yIndex) => (
+              <Text key={yIndex} className="flex-1 text-center text-xs">
+                {typeof item[yKey.key] === 'number' 
+                  ? item[yKey.key].toLocaleString('en-IN', {
+                      style: 'currency',
+                      currency: 'INR',
+                      maximumFractionDigits: 0
+                    })
+                  : item[yKey.key]
+                }
+              </Text>
+            ))}
+          </View>
+        ))}
+      </Card>
+
+      <Text className="text-xs text-gray-500 text-center mt-2">
+        * For the full chart visualization, consider using react-native-chart-kit
+      </Text>
+    </View>
+  );
 };
 
 export default GraphPlot;

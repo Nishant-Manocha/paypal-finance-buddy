@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Info, RotateCcw } from 'lucide-react';
+import { View, ScrollView, Text } from 'react-native';
+import { Card, Button, TextInput, IconButton, Chip } from 'react-native-paper';
 import GraphPlot from './GraphPlot';
 
 interface FormData {
@@ -148,161 +144,145 @@ const SimpleInterestCalculator = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="calculator-card animate-fade-in">
-        <div className="space-y-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-primary mb-3">Simple Interest Calculator</h2>
-            <p className="text-lg text-muted-foreground">Calculate simple interest and total amount</p>
-          </div>
-
-          <div className="input-group">
-            <div className="input-container">
-              <div className="input-label">
-                <Label htmlFor="principal">Principal Amount (₹)</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Info className="info-icon" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>The initial amount of money</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <Input
-                id="principal"
-                type="text"
+    <ScrollView className="flex-1">
+      <Card className="mx-4 mb-6">
+        <Card.Content className="p-6">
+          <Text className="text-2xl font-bold text-center mb-6 text-blue-600">
+            Simple Interest Calculator
+          </Text>
+          
+          <View className="space-y-4">
+            {/* Principal Amount Input */}
+            <View>
+              <TextInput
+                label="Principal Amount (₹)"
                 value={formData.principal}
-                onChange={(e) => handleInputChange('principal', e.target.value)}
-                placeholder="e.g., 100000"
-                className={`input-field ${errors.principal ? 'border-destructive ring-destructive/20' : ''}`}
+                onChangeText={(value) => handleInputChange('principal', value)}
+                keyboardType="numeric"
+                error={!!errors.principal}
+                mode="outlined"
+                left={<TextInput.Icon icon="currency-inr" />}
               />
               {errors.principal && (
-                <p className="text-sm text-destructive animate-fade-in">{errors.principal}</p>
+                <Text className="text-red-500 text-sm mt-1">{errors.principal}</Text>
               )}
-            </div>
+            </View>
 
-            <div className="input-container">
-              <div className="input-label">
-                <Label htmlFor="rate">Interest Rate (% per year)</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Info className="info-icon" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Annual interest rate percentage</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <Input
-                id="rate"
-                type="text"
+            {/* Interest Rate Input */}
+            <View>
+              <TextInput
+                label="Interest Rate (% per annum)"
                 value={formData.rate}
-                onChange={(e) => handleInputChange('rate', e.target.value)}
-                placeholder="e.g., 8.5"
-                className={`input-field ${errors.rate ? 'border-destructive ring-destructive/20' : ''}`}
+                onChangeText={(value) => handleInputChange('rate', value)}
+                keyboardType="numeric"
+                error={!!errors.rate}
+                mode="outlined"
+                left={<TextInput.Icon icon="percent" />}
               />
               {errors.rate && (
-                <p className="text-sm text-destructive animate-fade-in">{errors.rate}</p>
+                <Text className="text-red-500 text-sm mt-1">{errors.rate}</Text>
               )}
-            </div>
+            </View>
 
-            <div className="input-container">
-              <div className="input-label">
-                <Label htmlFor="time">Time Period (years)</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Info className="info-icon" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Duration of investment in years</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <Input
-                id="time"
-                type="text"
+            {/* Time Period Input */}
+            <View>
+              <TextInput
+                label="Time Period (years)"
                 value={formData.time}
-                onChange={(e) => handleInputChange('time', e.target.value)}
-                placeholder="e.g., 5"
-                className={`input-field ${errors.time ? 'border-destructive ring-destructive/20' : ''}`}
+                onChangeText={(value) => handleInputChange('time', value)}
+                keyboardType="numeric"
+                error={!!errors.time}
+                mode="outlined"
+                left={<TextInput.Icon icon="calendar" />}
               />
               {errors.time && (
-                <p className="text-sm text-destructive animate-fade-in">{errors.time}</p>
+                <Text className="text-red-500 text-sm mt-1">{errors.time}</Text>
               )}
-            </div>
-          </div>
+            </View>
 
-          <div className="button-container">
-            <Button
-              onClick={calculateSimpleInterest}
-              disabled={!isFormValid()}
-              className="btn-primary"
-            >
-              Calculate Interest
-            </Button>
-            <Button
-              onClick={resetForm}
-              className="btn-secondary"
-            >
-              <RotateCcw className="h-5 w-5 mr-2" />
-              Reset
-            </Button>
-          </div>
-        </div>
-      </div>
+            {/* Action Buttons */}
+            <View className="flex-row justify-between mt-6">
+              <Button
+                mode="outlined"
+                onPress={resetForm}
+                icon="refresh"
+                className="flex-1 mr-2"
+              >
+                Reset
+              </Button>
+              <Button
+                mode="contained"
+                onPress={calculateSimpleInterest}
+                disabled={!isFormValid()}
+                icon="calculator"
+                className="flex-1 ml-2"
+              >
+                Calculate
+              </Button>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
 
+      {/* Results */}
       {showResults && results.valid && (
-        <div className="calculator-card animate-bounce-in">
-          <h3 className="text-2xl font-bold text-center mb-8 text-primary">Calculation Results</h3>
-          
-          <div className="results-grid">
-            <div className="result-card">
-              <p className="text-sm text-muted-foreground mb-2">Simple Interest</p>
-              <p className="text-2xl font-bold text-primary">
-                {formatCurrency(results.simpleInterest)}
-              </p>
-            </div>
+        <Card className="mx-4 mb-6">
+          <Card.Content className="p-6">
+            <Text className="text-xl font-bold text-center mb-4 text-green-600">
+              Calculation Results
+            </Text>
             
-            <div className="result-card">
-              <p className="text-sm text-muted-foreground mb-2">Principal Amount</p>
-              <p className="text-2xl font-bold text-success">
-                {formatCurrency(parseFloat(formData.principal))}
-              </p>
-            </div>
-            
-            <div className="result-card">
-              <p className="text-sm text-muted-foreground mb-2">Total Amount</p>
-              <p className="text-2xl font-bold text-primary">
-                {formatCurrency(results.totalAmount)}
-              </p>
-            </div>
+            <View className="space-y-3">
+              <View className="flex-row justify-between items-center py-3 border-b border-gray-200">
+                <Text className="text-gray-700 font-medium">Principal Amount:</Text>
+                <Text className="text-lg font-bold">{formatCurrency(parseFloat(formData.principal))}</Text>
+              </View>
+              
+              <View className="flex-row justify-between items-center py-3 border-b border-gray-200">
+                <Text className="text-gray-700 font-medium">Simple Interest:</Text>
+                <Text className="text-lg font-bold text-blue-600">{formatCurrency(results.simpleInterest)}</Text>
+              </View>
+              
+              <View className="flex-row justify-between items-center py-3">
+                <Text className="text-gray-700 font-medium">Total Amount:</Text>
+                <Text className="text-xl font-bold text-green-600">{formatCurrency(results.totalAmount)}</Text>
+              </View>
+            </View>
 
-            <div className="result-card">
-              <p className="text-sm text-muted-foreground mb-2">Growth</p>
-              <p className="text-xl font-bold text-warning">
-                {((results.totalAmount - parseFloat(formData.principal)) / parseFloat(formData.principal) * 100).toFixed(1)}%
-              </p>
-            </div>
-          </div>
-
-          <GraphPlot
-            data={generateGraphData()}
-            type="line"
-            title="Simple Interest Growth Over Time"
-            xAxisKey="year"
-            yAxisKey="amount"
-            className="animate-slide-up"
-          />
-        </div>
+            {/* Quick Info */}
+            <View className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <Text className="text-sm text-blue-800 text-center">
+                Formula: SI = (P × R × T) / 100
+              </Text>
+              <Text className="text-xs text-blue-600 text-center mt-1">
+                Total Amount = Principal + Simple Interest
+              </Text>
+            </View>
+          </Card.Content>
+        </Card>
       )}
-    </div>
+
+      {/* Graph */}
+      {showResults && results.valid && (
+        <Card className="mx-4 mb-6">
+          <Card.Content className="p-6">
+            <Text className="text-xl font-bold text-center mb-4">
+              Growth Visualization
+            </Text>
+            <GraphPlot
+              data={generateGraphData()}
+              title="Simple Interest Growth Over Time"
+              xKey="year"
+              yKeys={[
+                { key: 'amount', label: 'Total Amount', color: '#10b981' },
+                { key: 'principal', label: 'Principal', color: '#6366f1' },
+                { key: 'interest', label: 'Interest', color: '#f59e0b' }
+              ]}
+            />
+          </Card.Content>
+        </Card>
+      )}
+    </ScrollView>
   );
 };
 
