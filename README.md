@@ -1,73 +1,104 @@
-# Welcome to your Lovable project
+# Expo Finance Calculator App
 
-## Project info
+A modern finance calculator built with Expo SDK 53, React Native, and NativeWind.
 
-**URL**: https://lovable.dev/projects/bc2768b5-c217-46f0-9ae8-efb0b044c0d0
+## Features
 
-## How can I edit this code?
+- **Simple Interest Calculator** - Calculate simple interest with interactive visualizations
+- **Loan EMI Calculator** - Calculate monthly EMI for loans with detailed breakdowns
+- **Modern UI** - Built with React Native Paper and NativeWind (Tailwind CSS)
+- **Cross-platform** - Runs on iOS, Android, and Web
+- **Latest Tech Stack** - Expo SDK 53, React Native 0.79.5, TypeScript
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+### Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/bc2768b5-c217-46f0-9ae8-efb0b044c0d0) and start prompting.
+- Node.js 18+ 
+- npm or yarn
+- Expo CLI (optional, but recommended)
 
-Changes made via Lovable will be committed automatically to this repo.
+### Installation
 
-**Use your preferred IDE**
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+3. Start the development server:
+   ```bash
+   npm start
+   ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Available Scripts
 
-Follow these steps:
+- `npm start` - Start the Expo development server
+- `npm run android` - Run on Android device/emulator
+- `npm run ios` - Run on iOS device/simulator (macOS only)
+- `npm run web` - Run in web browser
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Tech Stack
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- **Expo SDK 53** - Latest Expo framework
+- **React Native 0.79.5** - Latest React Native
+- **Expo Router 5.1.4** - File-based routing
+- **React Native Paper 5.12.6** - Material Design components
+- **NativeWind 4.1.23** - Tailwind CSS for React Native
+- **TypeScript** - Type safety
+- **React Query** - Data fetching and state management
+- **React Hook Form + Zod** - Form validation
+- **Metro** - JavaScript bundler
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Project Structure
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+├── app/                    # Expo Router pages
+│   ├── _layout.tsx        # Root layout
+│   └── index.tsx          # Home page
+├── src/
+│   ├── components/        # React Native components
+│   │   ├── FinanceCalculator.tsx
+│   │   ├── SimpleInterestCalculator.tsx
+│   │   ├── LoanEmiCalculator.tsx
+│   │   └── GraphPlot.tsx
+│   ├── lib/              # Utility functions
+│   └── hooks/            # Custom hooks
+├── assets/               # Images and static files
+├── App.tsx              # Main app component
+├── app.json             # Expo configuration
+├── babel.config.js      # Babel configuration
+├── metro.config.js      # Metro bundler configuration
+├── tailwind.config.js   # NativeWind configuration
+└── global.css          # Global styles
 ```
 
-**Edit a file directly in GitHub**
+## Features Implemented
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Simple Interest Calculator
+- Principal amount input with validation
+- Interest rate and time period inputs
+- Real-time calculation with results display
+- Growth visualization over time
+- Currency formatting (INR)
 
-**Use GitHub Codespaces**
+### Loan EMI Calculator
+- Loan amount, interest rate, and tenure inputs
+- Monthly EMI calculation
+- Total interest and amount breakdown
+- Formula display and loan summary
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### UI/UX Features
+- Material Design with React Native Paper
+- Responsive design with NativeWind
+- Form validation with error messages
+- Clean and modern interface
+- Cross-platform compatibility
 
-## What technologies are used for this project?
+## Development
 
-This project is built with:
+This app was migrated from a React web application to React Native using Expo SDK 53. All components have been rewritten to use React Native equivalents while maintaining the same functionality.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## License
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/bc2768b5-c217-46f0-9ae8-efb0b044c0d0) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+MIT License

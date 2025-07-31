@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Calculator, Percent } from 'lucide-react';
+import { View, ScrollView, Text } from 'react-native';
+import { Button, Card, SegmentedButtons } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import SimpleInterestCalculator from './SimpleInterestCalculator';
 import LoanEmiCalculator from './LoanEmiCalculator';
 
@@ -10,61 +10,58 @@ type CalculatorType = 'simple-interest' | 'loan-emi';
 const FinanceCalculator = () => {
   const [activeCalculator, setActiveCalculator] = useState<CalculatorType>('simple-interest');
 
-  const toggleCalculator = (type: CalculatorType) => {
-    setActiveCalculator(type);
-  };
+  const buttons = [
+    {
+      value: 'simple-interest',
+      label: 'Simple Interest',
+      icon: 'percent',
+    },
+    {
+      value: 'loan-emi',
+      label: 'Loan EMI',
+      icon: 'calculator',
+    },
+  ];
 
   return (
-    <div className="min-h-screen py-8 px-4 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="text-center mb-12 animate-fade-in">
-        <h1 className="text-5xl font-bold text-primary mb-4">
-          PayPal Finance Buddy
-        </h1>
-        <p className="text-xl text-muted-foreground mb-8">
-          Your trusted companion for financial calculations
-        </p>
-        
-        {/* Toggle Buttons */}
-        <div className="inline-flex p-1 bg-card rounded-xl border border-border shadow-lg">
-          <Button
-            onClick={() => toggleCalculator('simple-interest')}
-            className={`tab-button ${
-              activeCalculator === 'simple-interest' ? 'tab-active' : 'tab-inactive'
-            }`}
-          >
-            <Percent className="h-5 w-5" />
-            Simple Interest
-          </Button>
+    <SafeAreaView className="flex-1 bg-gray-50">
+      <ScrollView className="flex-1" contentContainerStyle={{ padding: 16 }}>
+        {/* Header */}
+        <View className="items-center mb-12">
+          <Text className="text-4xl font-bold text-blue-600 mb-4 text-center">
+            PayPal Finance Buddy
+          </Text>
+          <Text className="text-lg text-gray-600 mb-8 text-center">
+            Your trusted companion for financial calculations
+          </Text>
           
-          <Button
-            onClick={() => toggleCalculator('loan-emi')}
-            className={`tab-button ${
-              activeCalculator === 'loan-emi' ? 'tab-active' : 'tab-inactive'
-            }`}
-          >
-            <Calculator className="h-5 w-5" />
-            Loan EMI
-          </Button>
-        </div>
-      </div>
+          {/* Toggle Buttons */}
+          <Card className="mb-8 p-4">
+            <SegmentedButtons
+              value={activeCalculator}
+              onValueChange={(value) => setActiveCalculator(value as CalculatorType)}
+              buttons={buttons}
+            />
+          </Card>
+        </View>
 
-      {/* Calculator Content */}
-      <div className="animate-scale-in">
-        {activeCalculator === 'simple-interest' && <SimpleInterestCalculator />}
-        {activeCalculator === 'loan-emi' && <LoanEmiCalculator />}
-      </div>
+        {/* Calculator Content */}
+        <View className="mb-8">
+          {activeCalculator === 'simple-interest' && <SimpleInterestCalculator />}
+          {activeCalculator === 'loan-emi' && <LoanEmiCalculator />}
+        </View>
 
-      {/* Footer */}
-      <div className="text-center mt-12 p-6">
-        <div className="text-sm text-muted-foreground">
-          <p className="mb-2">Built with ❤️ using React, TypeScript & Tailwind CSS</p>
-          <p className="text-xs">
+        {/* Footer */}
+        <View className="items-center mt-12 p-6">
+          <Text className="text-sm text-gray-600 text-center mb-2">
+            Built with ❤️ using React Native, TypeScript & NativeWind
+          </Text>
+          <Text className="text-xs text-gray-500 text-center">
             All calculations are performed locally. No data is stored or transmitted.
-          </p>
-        </div>
-      </div>
-    </div>
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

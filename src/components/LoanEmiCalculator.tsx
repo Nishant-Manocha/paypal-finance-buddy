@@ -1,70 +1,60 @@
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Info, RotateCcw } from 'lucide-react';
-import GraphPlot from './GraphPlot';
+import { View, ScrollView, Text } from 'react-native';
+import { Card, Button, TextInput } from 'react-native-paper';
 
 interface FormData {
-  loanAmount: string;
-  interestRate: string;
-  tenure: string;
+  principal: string;
+  rate: string;
+  time: string;
 }
 
 interface Errors {
-  loanAmount?: string;
-  interestRate?: string;
-  tenure?: string;
+  principal?: string;
+  rate?: string;
+  time?: string;
 }
 
 interface Results {
   emi: number;
-  totalPayment: number;
   totalInterest: number;
+  totalAmount: number;
   valid: boolean;
 }
 
 const LoanEmiCalculator = () => {
   const [formData, setFormData] = useState<FormData>({
-    loanAmount: '',
-    interestRate: '',
-    tenure: ''
+    principal: '',
+    rate: '',
+    time: ''
   });
   
   const [errors, setErrors] = useState<Errors>({});
-  const [results, setResults] = useState<Results>({ 
-    emi: 0, 
-    totalPayment: 0, 
-    totalInterest: 0, 
-    valid: false 
-  });
+  const [results, setResults] = useState<Results>({ emi: 0, totalInterest: 0, totalAmount: 0, valid: false });
   const [showResults, setShowResults] = useState(false);
 
   const validateInputs = (data: FormData): Errors => {
     const newErrors: Errors = {};
     
-    const loanAmount = parseFloat(data.loanAmount);
-    const interestRate = parseFloat(data.interestRate);
-    const tenure = parseFloat(data.tenure);
+    const principal = parseFloat(data.principal);
+    const rate = parseFloat(data.rate);
+    const time = parseFloat(data.time);
 
-    if (!data.loanAmount || loanAmount <= 0) {
-      newErrors.loanAmount = 'Loan amount must be greater than 0';
-    } else if (loanAmount > 100000000) {
-      newErrors.loanAmount = 'Loan amount too large';
+    if (!data.principal || principal <= 0) {
+      newErrors.principal = 'Principal amount must be greater than 0';
+    } else if (principal > 100000000) {
+      newErrors.principal = 'Principal amount too large';
     }
 
-    if (!data.interestRate || interestRate < 0) {
-      newErrors.interestRate = 'Interest rate must be 0 or greater';
-    } else if (interestRate > 50) {
-      newErrors.interestRate = 'Interest rate seems too high';
+    if (!data.rate || rate <= 0) {
+      newErrors.rate = 'Interest rate must be greater than 0';
+    } else if (rate > 50) {
+      newErrors.rate = 'Interest rate seems too high';
     }
 
-    if (!data.tenure || tenure <= 0) {
-      newErrors.tenure = 'Tenure must be greater than 0';
-    } else if (tenure > 600) {
-      newErrors.tenure = 'Tenure seems too long';
+    if (!data.time || time <= 0) {
+      newErrors.time = 'Time must be greater than 0';
+    } else if (time > 30) {
+      newErrors.time = 'Time period seems too long';
     }
 
     return newErrors;
@@ -75,33 +65,19 @@ const LoanEmiCalculator = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      const P = parseFloat(formData.loanAmount);
-      const R = parseFloat(formData.interestRate);
-      const N = parseFloat(formData.tenure);
+      const P = parseFloat(formData.principal);
+      const R = parseFloat(formData.rate) / 12 / 100; // Monthly interest rate
+      const N = parseFloat(formData.time) * 12; // Total number of months
 
-      let emi = 0;
-      let totalPayment = 0;
-      let totalInterest = 0;
-
-      if (R === 0) {
-        // Handle zero interest case
-        emi = P / N;
-        totalPayment = P;
-        totalInterest = 0;
-      } else {
-        // Standard EMI calculation
-        const monthlyRate = R / (12 * 100);
-        const numerator = P * monthlyRate * Math.pow(1 + monthlyRate, N);
-        const denominator = Math.pow(1 + monthlyRate, N) - 1;
-        emi = numerator / denominator;
-        totalPayment = emi * N;
-        totalInterest = totalPayment - P;
-      }
+      // EMI = P * R * (1 + R)^N / ((1 + R)^N - 1)
+      const emi = P * R * Math.pow(1 + R, N) / (Math.pow(1 + R, N) - 1);
+      const totalAmount = emi * N;
+      const totalInterest = totalAmount - P;
 
       setResults({
         emi: emi,
-        totalPayment: totalPayment,
         totalInterest: totalInterest,
+        totalAmount: totalAmount,
         valid: true
       });
       setShowResults(true);
@@ -111,9 +87,9 @@ const LoanEmiCalculator = () => {
   };
 
   const resetForm = () => {
-    setFormData({ loanAmount: '', interestRate: '', tenure: '' });
+    setFormData({ principal: '', rate: '', time: '' });
     setErrors({});
-    setResults({ emi: 0, totalPayment: 0, totalInterest: 0, valid: false });
+    setResults({ emi: 0, totalInterest: 0, totalAmount: 0, valid: false });
     setShowResults(false);
   };
 
@@ -144,182 +120,143 @@ const LoanEmiCalculator = () => {
   };
 
   const isFormValid = () => {
-    return formData.loanAmount && formData.interestRate !== undefined && 
-           formData.tenure && Object.keys(errors).length === 0;
-  };
-
-  // Generate data for pie chart
-  const generatePieData = () => {
-    if (!results.valid) return [];
-    
-    return [
-      {
-        name: 'Principal',
-        value: parseFloat(formData.loanAmount),
-        fill: 'hsl(var(--success))'
-      },
-      {
-        name: 'Interest',
-        value: results.totalInterest,
-        fill: 'hsl(var(--primary))'
-      }
-    ];
+    return formData.principal && formData.rate && formData.time && 
+           Object.keys(errors).length === 0;
   };
 
   return (
-    <div className="space-y-8">
-      <div className="calculator-card animate-fade-in">
-        <div className="space-y-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-primary mb-3">Loan EMI Calculator</h2>
-            <p className="text-lg text-muted-foreground">Calculate your monthly EMI and total interest</p>
-          </div>
-
-          <div className="input-group">
-            <div className="input-container">
-              <div className="input-label">
-                <Label htmlFor="loanAmount">Loan Amount (₹)</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Info className="info-icon" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Total amount you want to borrow</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <Input
-                id="loanAmount"
-                type="text"
-                value={formData.loanAmount}
-                onChange={(e) => handleInputChange('loanAmount', e.target.value)}
-                placeholder="e.g., 1000000"
-                className={`input-field ${errors.loanAmount ? 'border-destructive ring-destructive/20' : ''}`}
-              />
-              {errors.loanAmount && (
-                <p className="text-sm text-destructive animate-fade-in">{errors.loanAmount}</p>
-              )}
-            </div>
-
-            <div className="input-container">
-              <div className="input-label">
-                <Label htmlFor="interestRate">Interest Rate (% per year)</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Info className="info-icon" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Annual interest rate charged by the lender</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <Input
-                id="interestRate"
-                type="text"
-                value={formData.interestRate}
-                onChange={(e) => handleInputChange('interestRate', e.target.value)}
-                placeholder="e.g., 8.5"
-                className={`input-field ${errors.interestRate ? 'border-destructive ring-destructive/20' : ''}`}
-              />
-              {errors.interestRate && (
-                <p className="text-sm text-destructive animate-fade-in">{errors.interestRate}</p>
-              )}
-            </div>
-
-            <div className="input-container">
-              <div className="input-label">
-                <Label htmlFor="tenure">Tenure (months)</Label>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Info className="info-icon" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Loan repayment period in months</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <Input
-                id="tenure"
-                type="text"
-                value={formData.tenure}
-                onChange={(e) => handleInputChange('tenure', e.target.value)}
-                placeholder="e.g., 240"
-                className={`input-field ${errors.tenure ? 'border-destructive ring-destructive/20' : ''}`}
-              />
-              {errors.tenure && (
-                <p className="text-sm text-destructive animate-fade-in">{errors.tenure}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="button-container">
-            <Button
-              onClick={calculateEMI}
-              disabled={!isFormValid()}
-              className="btn-primary"
-            >
-              Calculate EMI
-            </Button>
-            <Button
-              onClick={resetForm}
-              className="btn-secondary"
-            >
-              <RotateCcw className="h-5 w-5 mr-2" />
-              Reset
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {showResults && results.valid && (
-        <div className="calculator-card animate-bounce-in">
-          <h3 className="text-2xl font-bold text-center mb-8 text-primary">EMI Calculation Results</h3>
+    <ScrollView className="flex-1">
+      <Card className="mx-4 mb-6">
+        <Card.Content className="p-6">
+          <Text className="text-2xl font-bold text-center mb-6 text-blue-600">
+            Loan EMI Calculator
+          </Text>
           
-          <div className="results-grid">
-            <div className="result-card">
-              <p className="text-sm text-muted-foreground mb-2">Monthly EMI</p>
-              <p className="text-2xl font-bold text-primary">
-                {formatCurrency(results.emi)}
-              </p>
-            </div>
-            
-            <div className="result-card">
-              <p className="text-sm text-muted-foreground mb-2">Principal Amount</p>
-              <p className="text-2xl font-bold text-success">
-                {formatCurrency(parseFloat(formData.loanAmount))}
-              </p>
-            </div>
-            
-            <div className="result-card">
-              <p className="text-sm text-muted-foreground mb-2">Total Interest</p>
-              <p className="text-2xl font-bold text-warning">
-                {formatCurrency(results.totalInterest)}
-              </p>
-            </div>
-            
-            <div className="result-card">
-              <p className="text-sm text-muted-foreground mb-2">Total Payment</p>
-              <p className="text-2xl font-bold text-accent-foreground">
-                {formatCurrency(results.totalPayment)}
-              </p>
-            </div>
-          </div>
+          <View className="space-y-4">
+            {/* Principal Amount Input */}
+            <View>
+              <TextInput
+                label="Loan Amount (₹)"
+                value={formData.principal}
+                onChangeText={(value) => handleInputChange('principal', value)}
+                keyboardType="numeric"
+                error={!!errors.principal}
+                mode="outlined"
+                left={<TextInput.Icon icon="currency-inr" />}
+              />
+              {errors.principal && (
+                <Text className="text-red-500 text-sm mt-1">{errors.principal}</Text>
+              )}
+            </View>
 
-          <GraphPlot
-            data={generatePieData()}
-            type="pie"
-            title="Principal vs Interest Breakdown"
-            className="animate-slide-up"
-          />
-        </div>
+            {/* Interest Rate Input */}
+            <View>
+              <TextInput
+                label="Interest Rate (% per annum)"
+                value={formData.rate}
+                onChangeText={(value) => handleInputChange('rate', value)}
+                keyboardType="numeric"
+                error={!!errors.rate}
+                mode="outlined"
+                left={<TextInput.Icon icon="percent" />}
+              />
+              {errors.rate && (
+                <Text className="text-red-500 text-sm mt-1">{errors.rate}</Text>
+              )}
+            </View>
+
+            {/* Time Period Input */}
+            <View>
+              <TextInput
+                label="Loan Tenure (years)"
+                value={formData.time}
+                onChangeText={(value) => handleInputChange('time', value)}
+                keyboardType="numeric"
+                error={!!errors.time}
+                mode="outlined"
+                left={<TextInput.Icon icon="calendar" />}
+              />
+              {errors.time && (
+                <Text className="text-red-500 text-sm mt-1">{errors.time}</Text>
+              )}
+            </View>
+
+            {/* Action Buttons */}
+            <View className="flex-row justify-between mt-6">
+              <Button
+                mode="outlined"
+                onPress={resetForm}
+                icon="refresh"
+                className="flex-1 mr-2"
+              >
+                Reset
+              </Button>
+              <Button
+                mode="contained"
+                onPress={calculateEMI}
+                disabled={!isFormValid()}
+                icon="calculator"
+                className="flex-1 ml-2"
+              >
+                Calculate EMI
+              </Button>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
+
+      {/* Results */}
+      {showResults && results.valid && (
+        <Card className="mx-4 mb-6">
+          <Card.Content className="p-6">
+            <Text className="text-xl font-bold text-center mb-4 text-green-600">
+              EMI Calculation Results
+            </Text>
+            
+            <View className="space-y-3">
+              <View className="flex-row justify-between items-center py-3 border-b border-gray-200">
+                <Text className="text-gray-700 font-medium">Monthly EMI:</Text>
+                <Text className="text-xl font-bold text-blue-600">{formatCurrency(results.emi)}</Text>
+              </View>
+              
+              <View className="flex-row justify-between items-center py-3 border-b border-gray-200">
+                <Text className="text-gray-700 font-medium">Loan Amount:</Text>
+                <Text className="text-lg font-bold">{formatCurrency(parseFloat(formData.principal))}</Text>
+              </View>
+              
+              <View className="flex-row justify-between items-center py-3 border-b border-gray-200">
+                <Text className="text-gray-700 font-medium">Total Interest:</Text>
+                <Text className="text-lg font-bold text-orange-600">{formatCurrency(results.totalInterest)}</Text>
+              </View>
+              
+              <View className="flex-row justify-between items-center py-3">
+                <Text className="text-gray-700 font-medium">Total Amount:</Text>
+                <Text className="text-xl font-bold text-green-600">{formatCurrency(results.totalAmount)}</Text>
+              </View>
+            </View>
+
+            {/* Quick Info */}
+            <View className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <Text className="text-sm text-blue-800 text-center">
+                EMI = P × R × (1+R)^N / ((1+R)^N-1)
+              </Text>
+              <Text className="text-xs text-blue-600 text-center mt-1">
+                P = Principal, R = Monthly Rate, N = Number of Months
+              </Text>
+            </View>
+
+            {/* Additional Info */}
+            <View className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <Text className="text-sm text-gray-700 text-center mb-2">Loan Summary</Text>
+              <View className="flex-row justify-between">
+                <Text className="text-xs text-gray-600">Tenure: {formData.time} years ({parseFloat(formData.time) * 12} months)</Text>
+                <Text className="text-xs text-gray-600">Rate: {formData.rate}% p.a.</Text>
+              </View>
+            </View>
+          </Card.Content>
+        </Card>
       )}
-    </div>
+    </ScrollView>
   );
 };
 
